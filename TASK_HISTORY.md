@@ -1,0 +1,22 @@
+# Task: Mavis Project Review & Sync
+
+- [x] Load Mavis Persona and Config <!-- id: 0 -->
+- [x] Read Mavis Memory and Sidecar Instructions <!-- id: 1 -->
+- [x] Synchronize with Latest Claude Code Updates <!-- id: 2 -->
+- [x] Execute Phase 1: Physical Setup & Power Management <!-- id: 3 -->
+- [x] Execute Phase 2: Automate Boot & Login <!-- id: 4 -->
+- [x] Execute Phase 3: SSH & Remote Terminal Access (Passwordless Login) <!-- id: 5 -->
+- [x] Execute Phase 3: SSH & Remote Terminal Access (Alias Shortcut) <!-- id: 6 -->
+- [x] Execute Phase 4: Dev Toolchain & god-mode Migration (Verification) <!-- id: 7 -->
+- [x] Execute Phase 4: Dev Toolchain & god-mode Migration (tmux Installation) <!-- id: 8 -->
+- [x] Execute Phase 5: Storage Optimization (Forcing Symlinks & Sync Prep) <!-- id: 10 -->
+- [x] Execute Phase 5: Storage Optimization (Internal Module Migration) <!-- id: 11 -->
+- [x] Execute Phase 5: Storage Optimization (Project Migration to SSD - Optimized) <!-- id: 12 -->
+- [x] Execute Phase 5: Storage Optimization (Final Symlink & Tooling Check) <!-- id: 13 -->
+- [x] Execute Phase 6: Remote Development (SSH FS Troubleshooting - FAILED) <!-- id: 14 -->
+- [x] Execute Phase 6: Remote Development (Password Fallback - FAILED) <!-- id: 15 -->
+- [x] Execute Phase 6: Remote Development (Samba Troubleshooting - FAILED) <!-- id: 17 -->
+- [x] Execute Phase 6: Remote Development (VS Code Tunnel - FAILED/BYPASSED) <!-- id: 18 -->
+- [x] Execute Phase 6: Remote Development (WSL-Native SSHFS Mounting) <!-- id: 19 -->
+- [x] Execute Phase 7: Bulk Project Migration (Windows to Mac SSD) <!-- id: 20 -->
+- [x] Conclude Setup & Present Walkthrough <!-- id: 16 -->
