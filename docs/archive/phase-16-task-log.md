@@ -1,0 +1,32 @@
+# Task Breakdown: Mavis Activation
+
+- [x] Search for Mavis configuration and agent files
+- [x] Load and parse Mavis configuration (`config.yaml`)
+- [x] Load Mavis memories and instructions
+- [x] Greet Director and display status/menu
+- [x] Phase 14: Implement Git-based Sync Strategy
+    - [x] Create Implementation Plan & Request Review
+    - [x] Create `sync-brain.sh` for the WSL/Windows side
+    - [x] Create `sync-brain.sh` for Mac the Mac side
+    - [x] Add automated sync triggers to Mavis activation
+- [x] Phase 15: Automated Maintenance & Health Monitoring
+    - [x] Update `PROJECT_CONTEXT.md` & `cloud-server-setup-guide.md`
+    - [x] Create Implementation Plan
+    - [x] Implement Docker pruning cron job
+    - [x] Implement temperature & disk monitoring script
+    - [x] Setup Homepage Dashboard
+- [x] Create `god-mode-server` Repository
+    - [x] Configure `.gitignore`
+    - [x] Create repository on GitHub
+    - [x] Push local files as a migration reference
+- [x] Formalize "Cockpit & Engine" Architecture
+    - [x] Update `PROJECT_CONTEXT.md` with Architecture 2.0
+    - [x] Update `cloud-server-setup-guide.md` summarizing the dual-agent workflow
+    - [x] Sync final documentation to GitHub
+- [x] Phase 16: Mobile Media Cloud Sync
+    - [x] Update `PROJECT_CONTEXT.md` & `cloud-server-setup-guide.md`
+    - [x] Create Implementation Plan
+    - [x] Install SyncThing on Mac (Docker)
+    - [x] Enable Remote GUI Access (Tailscale)
+    - [x] Verify connectivity over Tailscale
+    - [x] Handshake with iPhone 11 (Möbius Sync Pro activated)
