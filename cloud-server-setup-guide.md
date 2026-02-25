@@ -26,8 +26,9 @@
 10. [Phase 10 — Firewall & Security Hardening](#phase-10--firewall--security-hardening)
 11. [Phase 11 — Dashboard & Quality of Life (Optional)](#phase-11--dashboard--quality-of-life-optional)
 12. [Phase 15 — Maintenance & Health Monitoring](#phase-15--maintenance--health-monitoring)
-13. [8GB RAM Strategy](#8gb-ram-strategy)
-14. [Maintenance & Troubleshooting](#maintenance--troubleshooting)
+13. [Phase 16 — Mobile Media Cloud Sync (Remote Access)](#phase-16--mobile-media-cloud-sync-remote-access)
+14. [8GB RAM Strategy](#8gb-ram-strategy)
+15. [Maintenance & Troubleshooting](#maintenance--troubleshooting)
 
 ---
 
@@ -519,6 +520,30 @@ Create a lightweight script (`~/scripts/health-check.sh`) to monitor:
 
 ### 3. Observability Dashboard
 Deploy [Homepage](https://gethomepage.dev/) via Docker to consolidate all operational views (refer to Phase 11 for setup).
+
+---
+
+## Phase 16 — Mobile Media Cloud Sync (Remote Access)
+
+Transform the Mac server into a private Google Photos / iCloud alternative that works globally via Tailscale.
+
+### 1. VPN Setup for Mobile
+- Install the **Tailscale** app on your iPhone, iPad, and Android devices.
+- Log in with the same GitHub account.
+- Your mobile devices can now reach the Mac server at `100.72.109.37` from anywhere in the world.
+
+### 2. Automated Backup Strategy (Option 1: SyncThing)
+Best for "Set it and Forget it" background sync.
+- **Mac:** `brew install syncthing && brew services start syncthing`.
+- **Phone:** Install **Syncthing** (Android) or **Möbius Sync** (iOS).
+- Pair the phone with the Mac and sync the camera folder to `/Volumes/Cob-SSD/Media/Photos/Phone-Auto-Backup`.
+
+### 3. On-Demand Backup Strategy (Option 2: PhotoSync App)
+Best for high reliability and organization.
+- Install **PhotoSync** on your mobile device.
+- Add a "Target" using **SMB**.
+- Server: `100.72.109.37`, Share: `Media`, Folder: `Photos`.
+- Trigger "Autoupload" when connected to Tailscale or specific WiFi.
 
 ---
 
