@@ -70,6 +70,27 @@ Convert a MacBook Air M1 (8GB RAM, 1TB external SSD) into a headless always-on s
 
 ---
 
+## Architecture 2.0: The Cockpit & The Engine Room
+
+This system is now a bidirectional, synchronized development ecosystem, referred to as the **Cockpit & Engine Room** architecture.
+
+### 1. The Cockpit (Windows/WSL + Antigravity)
+- **Role:** Primary User Interface, Orchestration, and Frontend/UI Development.
+- **Visuals:** Direct file access via local filesystem and WSL.
+- **Agent:** Antigravity (Gemini) acts as the **Pilot**, managing high-level project status, documentation, and coordination.
+
+### 2. The Engine Room (MacBook Air M1 + Mavis/Claude Code)
+- **Role:** Performance, Compute, Backend, and Native macOS Operations.
+- **Capabilities:** Native macOS builds (avoiding WSL2 I/O penalty), high-performance Docker orchestration.
+- **Agent:** Claude Code (Mavis), accessed via SSH, acts as the **Engineer**, handling heavy-lift builds and native system tasks.
+
+### 3. The Shared Consciousness (`_bmad` Brain)
+- **Sync:** Git-based bidirectional synchronization of the `_bmad` module (Phase 14).
+- **Transport:** Tailscale VPN provides secure, zero-config bidirectional SSH between WSL and Mac (Phase 13).
+- **Observability:** Centralized dashboard (Mavis Commander's Deck) on port `3010` (Phase 15).
+
+---
+
 ## Implementation Phases
 
 | Phase | Description | Status | Blocked By |
