@@ -1,0 +1,15 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# BMAD specific (if any local output exists)
+_bmad-output/
+
+# Logs
+*.log

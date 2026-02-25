@@ -26,7 +26,7 @@ Convert a MacBook Air M1 (8GB RAM, 1TB external SSD) into a headless always-on s
 | Machine | MacBook Air M1 (2020/2021) | Fanless — thermal management required |
 | RAM | **8GB** | Primary constraint — strict memory budget |
 | Internal Storage | 256GB (assumed) | macOS + apps only |
-| External Storage | 1TB SSD (USB-C) | Projects + Media — must auto-mount on reboot |
+| External Storage | 1TB SSD (Cob-SSD) | Projects + Media — must auto-mount on reboot |
 | Network | 5GHz WiFi | Ethernet adapter recommended for stability |
 | Power | USB-C charger (always plugged in) | Battery acts as built-in UPS |
 
@@ -39,7 +39,7 @@ Convert a MacBook Air M1 (8GB RAM, 1TB external SSD) into a headless always-on s
 │  MacBook Air M1 (macOS — Headless Server)       │
 │                                                   │
 │  ┌─────────────┐  ┌──────────────────────────┐  │
-│  │ macOS Native │  │ 1TB External SSD         │  │
+│  │ macOS Native │  │ 1TB External Cob-SSD     │  │
 │  │ ─ Node.js    │  │ ├── Dev/                 │  │
 │  │ ─ Git        │  │ │   ├── _bmad/           │  │
 │  │ ─ Claude Code│  │ │   └── god-mode/        │  │
@@ -85,7 +85,11 @@ Convert a MacBook Air M1 (8GB RAM, 1TB external SSD) into a headless always-on s
 | 9 | Media Migration (320GB Sync) | SUCCESS | Verified |
 | 10 | Remote Access (Tailscale) | SUCCESS | Verified |
 | 10 | Firewall & Security Hardening | Pending | Phase 3 |
-| 11 | Dashboard & QoL (Optional) | Pending | Phase 8, 9 |
+| 11 | Dashboard & Quality of Life (Optional) | Pending | Phase 8, 9 |
+| 12 | Mac god-mode Extension | SUCCESS | Verified |
+| 13 | Bidirectional SSH (Tailscale) | SUCCESS | Verified |
+| 14 | Git-based Brain Sync | SUCCESS | Verified |
+| 15 | Maintenance & Health Monitoring | SUCCESS | Verified |
 
 ---
 
