@@ -143,7 +143,7 @@ This system is now a bidirectional, synchronized development ecosystem, referred
 - **Risk Level:** Medium
 - **Mitigation:** Configure fstab entry. Test reboot cycle before going headless.
 - **Worst Case:** macOS update resets fstab or changes disk UUID
-- **Resolution:** Create a Launch Agent that checks mount status and remounts if needed. Keep disk UUID documented.
+- **Resolution:** Create a Launch Agent that checks mount status and remounts if needed. Keep disk UUID documented. **(CLOSED: Director confirmed fixed 2026-03-01)**
 
 ### B-005: FileVault Disabled — Physical Security (LOW)
 - **Impact:** Auto-login requires FileVault off. If MacBook is stolen, data is exposed.

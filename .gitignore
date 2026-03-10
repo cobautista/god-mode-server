@@ -13,3 +13,5 @@ _bmad-output/
 
 # Logs
 *.log
+
+_bmad/
