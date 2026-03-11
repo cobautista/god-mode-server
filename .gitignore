@@ -1,6 +1,7 @@
 # OS files
 .DS_Store
 Thumbs.db
+._*
 
 # Environments
 .env
@@ -14,4 +15,5 @@ _bmad-output/
 # Logs
 *.log
 
+_bmad
 _bmad/
