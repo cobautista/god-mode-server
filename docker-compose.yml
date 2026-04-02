@@ -1,0 +1,195 @@
+# God-Mode Docker MCP Hub
+# Mac server (cob-macbook-air) — always-on MCP services for all agents
+#
+# Start core services:  docker compose up -d
+# Start with testing:   docker compose --profile testing up -d
+# Stop all:             docker compose down
+# Logs:                 docker compose logs -f [service]
+# Rebuild after change: docker compose build [service] && docker compose up -d [service]
+#
+# Workspace PAT switching:
+#   personal:   GITHUB_PAT=<cobautista-pat>   docker compose up -d github-mcp
+#   simple.biz: GITHUB_PAT=<cobb-simple-pat>  docker compose up -d github-mcp
+#   aivate:     GITHUB_PAT=<aivate-pat>        docker compose up -d github-mcp
+
+services:
+
+  # ── Chocobo: GitHub MCP — personal (cobautista) ─────────────────────────
+  # Repos: personal projects, god-mode
+  # Claude Code: claude mcp add github-personal --transport sse http://localhost:8001/sse
+  github-personal:
+    build:
+      context: ./docker/github-mcp
+    image: god-mode/github-mcp:latest
+    container_name: mcp_github_personal
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    environment:
+      GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PAT_PERSONAL}
+    mem_limit: 256m
+
+  # ── Chocobo: GitHub MCP — aivate.net (aivaterepositories) ───────────────
+  # Repos: aivate-catalogue, drjamesgordon-landing-page, orbit-module, etc.
+  # Claude Code: claude mcp add github-aivate --transport sse http://localhost:8005/sse
+  github-aivate:
+    build:
+      context: ./docker/github-mcp
+    image: god-mode/github-mcp:latest
+    container_name: mcp_github_aivate
+    restart: unless-stopped
+    ports:
+      - "8005:8000"
+    environment:
+      GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PAT_AIVATE}
+    mem_limit: 256m
+
+  # ── Chocobo: GitHub MCP — simple.biz (Cobb-Simple) ──────────────────────
+  # Repos: Simple-biz org — dispute-tracker, ai-voice-agent, devassist, etc.
+  # Claude Code: claude mcp add github-simplebiz --transport sse http://localhost:8006/sse
+  github-simplebiz:
+    build:
+      context: ./docker/github-mcp
+    image: god-mode/github-mcp:latest
+    container_name: mcp_github_simplebiz
+    restart: unless-stopped
+    ports:
+      - "8006:8000"
+    environment:
+      GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PAT_SIMPLE_BIZ}
+    mem_limit: 256m
+
+  # ── Chrono + Samus: Supabase MCP — simple.biz ───────────────────────────
+  # Tools: database queries, schema management, migrations, edge functions
+  # Agent: Chrono (dev/debug), Samus (automation/integrations)
+  # Account: cobb@simple.biz Supabase org
+  # Token: app.supabase.com → Account → Access Tokens (simple.biz login)
+  # Claude Code: claude mcp add supabase-simplebiz --transport sse http://localhost:8002/sse
+  supabase-simplebiz:
+    image: node:22-alpine
+    container_name: mcp_supabase_simplebiz
+    restart: unless-stopped
+    ports:
+      - "8002:8000"
+    environment:
+      SUPABASE_ACCESS_TOKEN: ${SUPABASE_TOKEN_SIMPLE_BIZ}
+    command: >
+      sh -c "npx -y supergateway@latest
+      --stdio 'npx -y @supabase/mcp-server-supabase@latest'
+      --port 8000
+      --outputTransport sse"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/sse"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    mem_limit: 512m
+
+  # ── Chrono + Samus: Supabase MCP — aivate.net ───────────────────────────
+  # Tools: database queries, schema management, migrations, edge functions
+  # Agent: Chrono (dev/debug), Samus (automation/integrations)
+  # Account: cob@aivate.net Supabase org
+  # Token: app.supabase.com → Account → Access Tokens (aivate.net login)
+  # Claude Code: claude mcp add supabase-aivate --transport sse http://localhost:8004/sse
+  supabase-aivate:
+    image: node:22-alpine
+    container_name: mcp_supabase_aivate
+    restart: unless-stopped
+    ports:
+      - "8004:8000"
+    environment:
+      SUPABASE_ACCESS_TOKEN: ${SUPABASE_TOKEN_AIVATE}
+    command: >
+      sh -c "npx -y supergateway@latest
+      --stateless
+      --stdio 'npx -y @supabase/mcp-server-supabase@latest'
+      --port 8000
+      --outputTransport streamableHttp"
+    mem_limit: 512m
+
+  # ── Bowser: Playwright MCP ────────────────────────────────────────────────
+  # Tools: browser automation, E2E testing, screenshots, accessibility
+  # Agent: Bowser (QA, testing, code review)
+  # Heavy container (~800MB) — profile=testing, start only when needed
+  # Claude Code: claude mcp add playwright-mcp --transport sse http://localhost:8003/sse
+  playwright-mcp:
+    build:
+      context: ./docker/playwright-mcp
+    image: god-mode/playwright-mcp:latest
+    container_name: mcp_playwright
+    restart: unless-stopped
+    ports:
+      - "8003:8000"
+    ipc: host
+    healthcheck:
+      test: ["CMD", "sh", "-c", "STATUS=$$(curl -s --max-time 2 -o /dev/null -w '%{http_code}' http://localhost:8000/sse 2>/dev/null || true); [ \"$$STATUS\" = \"200\" ]"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    mem_limit: 1g
+    profiles:
+      - testing
+
+  # ── Zelda: Figma MCP ─────────────────────────────────────────────────────
+  # Tools: read Figma files, extract components, styles, tokens, design specs
+  # Agent: Zelda (UI/UX design, design-to-code handoff)
+  # Token: figma.com → Settings → Personal Access Tokens
+  # Claude Code: claude mcp add figma-mcp --transport sse http://localhost:8008/sse
+  figma-mcp:
+    image: node:22-alpine
+    container_name: mcp_figma
+    restart: unless-stopped
+    ports:
+      - "8008:8000"
+    environment:
+      FIGMA_API_KEY: ${FIGMA_API_KEY}
+    command: >
+      sh -c "npx -y supergateway@latest
+      --stdio 'npx -y figma-developer-mcp --figma-api-key=${FIGMA_API_KEY}'
+      --port 8000
+      --outputTransport sse"
+    mem_limit: 256m
+
+  # ── Samus: n8n — god-mode (personal + aivate.net) ────────────────────────
+  # Workspaces: personal + aivate.net — NOT for simple.biz
+  # Includes ffmpeg for Veo cinematic video pipeline (merges video clips)
+  # Data persisted at: /Volumes/Cob-SSD/Dev/n8n-data
+  # Webhook URL: http://100.72.109.37:5678 (Tailscale IP)
+  # UI: http://localhost:5678
+  n8n-godmode:
+    build:
+      context: ./docker/n8n-godmode
+    image: god-mode/n8n-godmode:latest
+    container_name: n8n_godmode
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      N8N_HOST: ${N8N_GODMODE_HOST:-100.72.109.37}
+      N8N_PORT: 5678
+      WEBHOOK_URL: ${N8N_GODMODE_URL:-http://100.72.109.37:5678}
+      N8N_SECURE_COOKIE: "false"
+      N8N_LOG_LEVEL: debug
+    volumes:
+      - /Volumes/Cob-SSD/Dev/n8n-data:/home/node/.n8n
+    mem_limit: 512m
+
+  # ── Samus: n8n MCP ────────────────────────────────────────────────────────
+  # Bridges n8n-godmode workflows to Claude Code via MCP/SSE
+  # Requires: N8N_GODMODE_API_KEY — generate in n8n UI after first boot
+  # Claude Code: claude mcp add n8n-mcp --transport sse http://localhost:8007/sse
+  n8n-mcp:
+    image: ghcr.io/czlonkowski/n8n-mcp:latest
+    container_name: mcp_n8n
+    restart: unless-stopped
+    ports:
+      - "8007:3000"
+    environment:
+      N8N_API_URL: http://n8n-godmode:5678
+      N8N_API_KEY: ${N8N_GODMODE_API_KEY}
+      MCP_MODE: http
+      PORT: 3000
+      AUTH_TOKEN: ${N8N_MCP_AUTH_TOKEN}
+    depends_on:
+      - n8n-godmode
+    mem_limit: 256m
