@@ -1,16 +1,22 @@
 # God-Mode Docker MCP Hub
-# Mac server (cob-macbook-air) — always-on MCP services for all agents
+# Mac server (cob-macbook-air) — MCP services for all agents
 #
-# Start core services:  docker compose up -d
-# Start with testing:   docker compose --profile testing up -d
-# Stop all:             docker compose down
-# Logs:                 docker compose logs -f [service]
-# Rebuild after change: docker compose build [service] && docker compose up -d [service]
+# ── ALWAYS-ON (start with `docker compose up -d`) ────────────────────────────
+#   github-personal, github-aivate, github-simplebiz
 #
-# Workspace PAT switching:
-#   personal:   GITHUB_PAT=<cobautista-pat>   docker compose up -d github-mcp
-#   simple.biz: GITHUB_PAT=<cobb-simple-pat>  docker compose up -d github-mcp
-#   aivate:     GITHUB_PAT=<aivate-pat>        docker compose up -d github-mcp
+# ── ON-DEMAND (start with alias or explicit profile flag) ────────────────────
+#   mcp-sb      → --profile simplebiz  (supabase-simplebiz)
+#   mcp-av      → --profile aivate     (supabase-aivate)
+#   mcp-figma   → --profile design     (figma-mcp)
+#   mcp-n8n     → --profile n8n        (n8n-godmode + n8n-mcp)
+#   mcp-testing → --profile testing    (playwright-mcp)
+#   mcp-stop    → stops all on-demand profiles
+#
+# Core commands:
+#   docker compose up -d                        ← always-on only
+#   docker compose down                         ← stop all running
+#   docker compose logs -f [service]            ← logs
+#   docker compose build [service] && docker compose up -d [service]  ← rebuild
 
 services:
 
@@ -27,7 +33,7 @@ services:
       - "8001:8000"
     environment:
       GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PAT_PERSONAL}
-    mem_limit: 256m
+    mem_limit: 128m
 
   # ── Chocobo: GitHub MCP — aivate.net (aivaterepositories) ───────────────
   # Repos: aivate-catalogue, drjamesgordon-landing-page, orbit-module, etc.
@@ -42,7 +48,7 @@ services:
       - "8005:8000"
     environment:
       GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PAT_AIVATE}
-    mem_limit: 256m
+    mem_limit: 128m
 
   # ── Chocobo: GitHub MCP — simple.biz (Cobb-Simple) ──────────────────────
   # Repos: Simple-biz org — dispute-tracker, ai-voice-agent, devassist, etc.
@@ -57,7 +63,7 @@ services:
       - "8006:8000"
     environment:
       GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_PAT_SIMPLE_BIZ}
-    mem_limit: 256m
+    mem_limit: 128m
 
   # ── Chrono + Samus: Supabase MCP — simple.biz ───────────────────────────
   # Tools: database queries, schema management, migrations, edge functions
@@ -83,7 +89,9 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
-    mem_limit: 512m
+    mem_limit: 256m
+    profiles:
+      - simplebiz
 
   # ── Chrono + Samus: Supabase MCP — aivate.net ───────────────────────────
   # Tools: database queries, schema management, migrations, edge functions
@@ -105,12 +113,15 @@ services:
       --stdio 'npx -y @supabase/mcp-server-supabase@latest'
       --port 8000
       --outputTransport streamableHttp"
-    mem_limit: 512m
+    mem_limit: 256m
+    profiles:
+      - aivate
 
   # ── Bowser: Playwright MCP ────────────────────────────────────────────────
   # Tools: browser automation, E2E testing, screenshots, accessibility
   # Agent: Bowser (QA, testing, code review)
   # Heavy container (~800MB) — profile=testing, start only when needed
+  # ⚠️  NEVER run simultaneously with n8n profile — combined limits exceed 2GB Docker VM
   # Claude Code: claude mcp add playwright-mcp --transport sse http://localhost:8003/sse
   playwright-mcp:
     build:
@@ -148,7 +159,9 @@ services:
       --stdio 'npx -y figma-developer-mcp --figma-api-key=${FIGMA_API_KEY}'
       --port 8000
       --outputTransport sse"
-    mem_limit: 256m
+    mem_limit: 128m
+    profiles:
+      - design
 
   # ── Samus: n8n — god-mode (personal + aivate.net) ────────────────────────
   # Workspaces: personal + aivate.net — NOT for simple.biz
@@ -172,7 +185,9 @@ services:
       N8N_LOG_LEVEL: debug
     volumes:
       - /Volumes/Cob-SSD/Dev/n8n-data:/home/node/.n8n
-    mem_limit: 512m
+    mem_limit: 384m
+    profiles:
+      - n8n
 
   # ── Samus: n8n MCP ────────────────────────────────────────────────────────
   # Bridges n8n-godmode workflows to Claude Code via MCP/SSE
@@ -192,4 +207,6 @@ services:
       AUTH_TOKEN: ${N8N_MCP_AUTH_TOKEN}
     depends_on:
       - n8n-godmode
-    mem_limit: 256m
+    mem_limit: 128m
+    profiles:
+      - n8n
