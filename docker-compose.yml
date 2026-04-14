@@ -120,8 +120,11 @@ services:
   # ── Bowser: Playwright MCP ────────────────────────────────────────────────
   # Tools: browser automation, E2E testing, screenshots, accessibility
   # Agent: Bowser (QA, testing, code review)
-  # Heavy container (~800MB) — profile=testing, start only when needed
+  # Heavy container (~800MB) — start only when needed
   # ⚠️  NEVER run simultaneously with n8n profile — combined limits exceed 2GB Docker VM
+  # Profiles:
+  #   testing → standalone QA/E2E sessions
+  #   ui      → paired with figma for UI/UX dev + visual testing (rare)
   # Claude Code: claude mcp add playwright-mcp --transport sse http://localhost:8003/sse
   playwright-mcp:
     build:
@@ -140,12 +143,16 @@ services:
     mem_limit: 1g
     profiles:
       - testing
+      - ui
 
   # ── Zelda: Figma MCP ─────────────────────────────────────────────────────
   # Tools: read Figma files, extract components, styles, tokens, design specs
   # Agent: Zelda (UI/UX design, design-to-code handoff)
   # Token: figma.com → Settings → Personal Access Tokens
   # Claude Code: claude mcp add figma-mcp --transport sse http://localhost:8008/sse
+  # Profiles:
+  #   design → figma only (lightweight, design inspection + handoff)
+  #   ui     → figma + playwright (full UI/UX dev + visual testing)
   figma-mcp:
     image: node:22-alpine
     container_name: mcp_figma
@@ -162,6 +169,7 @@ services:
     mem_limit: 128m
     profiles:
       - design
+      - ui
 
   # ── Samus: n8n — god-mode (personal + aivate.net) ────────────────────────
   # Workspaces: personal + aivate.net — NOT for simple.biz
